@@ -161,6 +161,26 @@ class PushPlugin : CordovaPlugin() {
       }
     }
 
+    /*
+    * Allows the app MainActivity to load the page of the most recently clicked push notification
+    * as the first page so that the app loads what the user wants more quickly.
+    */
+    @JvmStatic
+    fun getLaunchPath(): String? {
+        var path: String? = null
+
+        synchronized (gCachedExtras) {
+            if (gCachedExtras.isNotEmpty()) {
+                val b = gCachedExtras.get(0)
+                if (b != null) {
+                    path = b.getString("tn_link")
+                }
+            }
+        }
+        return path
+    }
+
+
     /**
      * Retrieves the badge count from SharedPreferences
      *
@@ -691,11 +711,10 @@ class PushPlugin : CordovaPlugin() {
       try {
         val badgeCount = data.getJSONObject(0).getInt(PushConstants.BADGE)
         setApplicationIconBadgeNumber(applicationContext, badgeCount)
+        callbackContext.success()
       } catch (e: JSONException) {
         callbackContext.error(e.message)
       }
-
-      callbackContext.success()
     }
   }
 
