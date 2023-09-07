@@ -372,12 +372,18 @@ class PushPlugin : CordovaPlugin() {
   private fun createDefaultNotificationChannelIfNeeded(options: JSONObject?) {
     // only call on Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val channels = notificationManager.notificationChannels
 
-      for (i in channels.indices) {
-        if (PushConstants.DEFAULT_CHANNEL_ID == channels[i].id) {
-          return
+      // attempting a fix like: https://github.com/OneSignal/OneSignal-Android-SDK/pull/1314
+      try {
+        val channels = notificationManager.notificationChannels
+        for (i in channels.indices) {
+          if (PushConstants.DEFAULT_CHANNEL_ID == channels[i].id) {
+            return
+          }
         }
+      } catch (e: NullPointerException) {
+        Log.e(TAG, "Null Pointer Exception ${e.message}")
+        return
       }
 
       try {
