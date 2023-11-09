@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.tasks.Tasks
@@ -715,10 +716,16 @@ class PushPlugin : CordovaPlugin() {
         val isNotificationEnabled = NotificationManagerCompat.from(applicationContext)
           .areNotificationsEnabled()
 
+        var showRationale = false
+        if (!isNotificationEnabled) {
+            showRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)
+        }
+
         Log.d(TAG, formatLogMessage("Has Notification Permission: $isNotificationEnabled"))
 
         val jo = JSONObject().apply {
           put(PushConstants.IS_ENABLED, isNotificationEnabled)
+          put("showRationale", showRationale)
         }
 
         val pluginResult = PluginResult(PluginResult.Status.OK, jo).apply {
