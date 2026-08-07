@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  id="@havesource/cordova-plugin-push" version="4.0.0">
+  id="@havesource/cordova-plugin-push" version="7.0.0">
 
   <name>Cordova Push Plugin</name>
   <description>Enable receiving push notifications on Android and iOS devices. Android uses Firebase Cloud Messaging. iOS uses Apple APNS Notifications.</description>
@@ -19,8 +19,6 @@
   </engines>
 
   <platform name="android">
-    <hook type="before_compile" src="hooks/android/beforeCompile.js"/>
-
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="PushNotification">
         <param name="android-package" value="com.adobe.phonegap.push.PushPlugin"/>
@@ -35,11 +33,13 @@
       <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
       <uses-permission android:name="${applicationId}.permission.PushHandlerActivity"/>
       <permission android:name="${applicationId}.permission.PushHandlerActivity" android:protectionLevel="signature"></permission>
+      <uses-permission android:name="${applicationId}.permission.BackgroundHandlerActivity"/>
+      <permission android:name="${applicationId}.permission.BackgroundHandlerActivity" android:protectionLevel="signature"></permission>
     </config-file>
 
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
-      <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.PushHandlerActivity"/>
-      <activity android:name="com.adobe.phonegap.push.BackgroundHandlerActivity" android:exported="true" android:permission="${applicationId}.permission.BackgroundHandlerActivity">
+      <activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="false" android:permission="${applicationId}.permission.PushHandlerActivity"/>
+      <activity android:name="com.adobe.phonegap.push.BackgroundHandlerActivity" android:exported="false" android:permission="${applicationId}.permission.BackgroundHandlerActivity">
         <intent-filter>
           <action android:name="com.adobe.phonegap.push.background.MESSAGING_EVENT"/>
           <category android:name="android.intent.category.DEFAULT" />
@@ -49,7 +49,7 @@
       <receiver android:name="com.adobe.phonegap.push.BackgroundActionButtonHandler"/>
       <receiver android:name="com.adobe.phonegap.push.PushDismissedHandler"/>
 
-      <service android:name="com.adobe.phonegap.push.FCMService" android:exported="true">
+      <service android:name="com.adobe.phonegap.push.FCMService" android:exported="false">
         <intent-filter>
           <action android:name="com.google.firebase.MESSAGING_EVENT"/>
         </intent-filter>
@@ -59,14 +59,11 @@
     <config-file target="config.xml" parent="/*">
       <preference name="AndroidXEnabled" value="true" />
       <preference name="GradlePluginGoogleServicesEnabled" value="true" />
-      <preference name="GradlePluginGoogleServicesVersion" value="4.3.15" />
-
       <preference name="GradlePluginKotlinEnabled" value="true" />
-      <preference name="GradlePluginKotlinVersion" value="1.7.21" />
     </config-file>
 
-    <preference name="ANDROIDX_CORE_VERSION" default="1.6.+"/>
-    <preference name="FCM_VERSION" default="23.+"/>
+    <preference name="ANDROIDX_CORE_VERSION" default="1.16.0"/>
+    <preference name="FCM_VERSION" default="24.1.0"/>
 
     <framework src="androidx.core:core:$ANDROIDX_CORE_VERSION" />
     <framework src="me.leolin:ShortcutBadger:1.1.22@aar"/>
@@ -93,11 +90,12 @@
   </platform>
 
   <platform name="ios">
-    <preference name="IOS_FIREBASE_MESSAGING_VERSION" default="~> 8.1.1"/>
+    <preference name="IOS_FIREBASE_MESSAGING_VERSION" default="11.8.0"/>
 
     <config-file target="config.xml" parent="/*">
       <feature name="PushNotification">
         <param name="ios-package" value="PushPlugin"/>
+        <param name="onload" value="true"/>
       </feature>
     </config-file>
 
@@ -115,10 +113,17 @@
       <string>production</string>
     </config-file>
 
-    <source-file src="src/ios/AppDelegate+notification.m"/>
+    <source-file src="src/ios/AppDelegate+PushPlugin.m"/>
     <source-file src="src/ios/PushPlugin.m"/>
-    <header-file src="src/ios/AppDelegate+notification.h"/>
+    <source-file src="src/ios/PushPluginConstants.m"/>
+    <source-file src="src/ios/PushPluginFCM.m"/>
+    <source-file src="src/ios/PushPluginSettings.m"/>
+
+    <header-file src="src/ios/AppDelegate+PushPlugin.h"/>
     <header-file src="src/ios/PushPlugin.h"/>
+    <source-file src="src/ios/PushPluginConstants.h"/>
+    <header-file src="src/ios/PushPluginFCM.h"/>
+    <header-file src="src/ios/PushPluginSettings.h"/>
 
     <framework src="PushKit.framework"/>
 

@@ -25,7 +25,7 @@
   - [Priority in Notifications](#priority-in-notifications)
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
-    - [Use of content_available: true](#use-of-content_available-true)
+    - [Use of content\_available: true](#use-of-content_available-true)
     - [Chinese Android Phones](#chinese-android-phones)
     - [Application force closed](#application-force-closed)
     - [Caching](#caching)
@@ -147,7 +147,7 @@ Note that the properties are "normalized" across platforms, so this is passed to
 
 ## iOS Message Format
 
-The JSON message can contain the following fields, see [Apple developer docs](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html#//apple_ref/doc/uid/TP40008194-CH17-SW5) for a complete list
+For a full list of payload keys, refer to the [Generating a Remote Notification](https://developer.apple.com/documentation/usernotifications/generating-a-remote-notification) documentation on Apple Developer.
 
 ```json
 {
@@ -1567,9 +1567,9 @@ public void onCreate(Bundle savedInstanceState)
 If you don't see the `if` statement that checks for the appearance of `cdvStartInBackground` you will probably need to do:
 
 ```
-phonegap platform rm android
-phonegap platform add android
-phonegap build android
+cordova platform rm android
+cordova platform add android
+cordova build android
 ```
 
 This should add the correct code to the `MainActivity` class.
