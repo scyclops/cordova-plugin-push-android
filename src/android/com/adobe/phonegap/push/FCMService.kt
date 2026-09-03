@@ -21,6 +21,7 @@ import androidx.core.text.HtmlCompat
 import com.adobe.phonegap.push.PushPlugin.Companion.isActive
 import com.adobe.phonegap.push.PushPlugin.Companion.isInForeground
 import com.adobe.phonegap.push.PushPlugin.Companion.sendExtras
+import com.adobe.phonegap.push.PushPlugin.Companion.sendNotificationReceived
 import com.adobe.phonegap.push.PushPlugin.Companion.setApplicationIconBadgeNumber
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -159,6 +160,8 @@ class FCMService : FirebaseMessagingService() {
         extras.putBoolean(PushConstants.COLDSTART, isActive)
         showNotificationIfPossible(extras)
       }
+
+      sendNotificationReceived()
     }
   }
 

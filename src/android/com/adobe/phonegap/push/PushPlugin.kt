@@ -168,6 +168,26 @@ class PushPlugin : CordovaPlugin() {
       }
     }
 
+    @JvmStatic
+    fun sendNotificationReceived() {
+      if (gWebView != null) {
+        val json = JSONObject()
+        try {
+          val additionalData = JSONObject()
+
+          additionalData.put(PushConstants.ACTION_CALLBACK, "pushNotificationReceived")
+
+          json.put(PushConstants.ADDITIONAL_DATA, additionalData)
+
+          Log.v(TAG, "sendNotificationReceived JSON Result: $json")
+        } catch (e: JSONException) {
+          Log.e(TAG, "sendNotificationReceived had a JSON Exception")
+        }
+
+        sendEvent(json)
+      }
+    }
+
     /*
     * Allows the app MainActivity to load the page of the most recently clicked push notification
     * as the first page so that the app loads what the user wants more quickly.
